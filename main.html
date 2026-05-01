@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0067A9" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="NCLEX RN" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>NCLEX RN</title>
+  <link rel="manifest" href="site.webmanifest" />
+		<link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css?v=43" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-button hidden" id="backToListBtn" type="button" aria-label="Back to test list"><span class="material-symbols-outlined">arrow_back_ios_new</span></button>
+      <div class="brand" aria-label="Application title">
+        <div>
+          <strong>NCLEX RN</strong>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="stat-chip" data-stat="time" type="button"><span>Time</span><strong id="timeStat">00:00</strong></button>
+        <button class="stat-chip" data-stat="progress" type="button"><span>Ques.</span><strong id="progressStat">0/0</strong></button>
+        <button class="stat-chip" data-stat="score" type="button"><span>Percent</span><strong id="scoreStat">0%</strong></button>
+        <button class="icon-button" id="themeBtn" type="button" aria-label="Toggle dark mode"><span class="material-symbols-outlined">dark_mode</span></button>
+        <button class="icon-button text-size-button" id="refreshCatalogBtn" type="button" aria-label="Change text size" title="Text size: Medium"><span class="material-symbols-outlined">format_size</span></button>
+        <button class="icon-button" id="clearProgressBtn" type="button" aria-label="Clear progress"><span class="material-symbols-outlined">restart_alt</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section id="catalogView" class="view active" aria-labelledby="catalogTitle">
+      <div class="hero-card">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="material-symbols-outlined">monitoring</span>NCLEX RN</p>
+          <h1 id="catalogTitle">Final Assessment Tests</h1>
+          <p class="hero-text">ਮੰਜ਼ਿਲ ਦੂਰ ਹੋ ਸਕਦੀ ਹੈ, ਪਰ ਹਰ ਰੋਜ਼ ਦੀ ਮਿਹਨਤ ਰਸਤਾ ਛੋਟਾ ਕਰ ਦਿੰਦੀ ਹੈ।</p>
+        </div>
+        <div class="hero-stats hero-stats-orbs" aria-label="Question bank overview">
+          <section class="hero-orb-panel hero-orb-used-panel" aria-label="QBank used percentage">
+            <span class="hero-metric-orb hero-used-orb" id="heroQbankRing" style="--used-angle: 0deg;">
+              <span class="hero-metric-center">
+                <strong id="qbankUsagePercent">0%</strong>
+              </span>
+            </span>
+            <small class="hero-orb-label">QBank Used</small>
+          </section>
+          <section class="hero-orb-panel hero-orb-done-panel" aria-label="Questions done summary">
+            <span class="hero-metric-orb hero-done-orb" id="heroDoneRing" style="--correct-end: 0deg; --partial-end: 0deg; --incorrect-end: 0deg;">
+              <span class="hero-metric-center">
+                <strong id="doneCorrectPercent">0%</strong>
+              </span>
+            </span>
+            <small class="hero-orb-label hero-orb-label-compact" id="doneVsTotalLabel">CORRECT</small>
+          </section>
+        </div>
+        <button class="live-darshan-card" id="liveDarshanBtn" type="button" aria-label="Play or pause Gurbani live stream" aria-pressed="false">
+          <span class="live-darshan-badge" id="liveDarshanBadge"><span class="material-symbols-outlined">play_circle</span><span id="liveDarshanBadgeText">Play</span></span>
+          <span class="live-darshan-copy">
+            <small id="liveDarshanStatus">Tap to make break peaceful</small>
+          </span>
+        </button>
+      </div>
+
+      <div class="toolbar-card front-toolbar-removed" aria-hidden="true">
+        <label class="search-wrap" for="searchInput">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Search tests by name, topic, or tag" autocomplete="off" />
+        </label>
+        <div class="toolbar-actions">
+          <input id="localFileInput" type="file" accept=".json,.txt" multiple hidden />
+          <button class="secondary-button icon-button" id="localUploadBtn" type="button" aria-label="Import files"><span class="material-symbols-outlined">upload_file</span></button>
+        </div>
+      </div>
+
+      <div class="notice hidden front-notice-removed" id="catalogNotice"></div>
+      <div class="test-grid" id="testGrid"></div>
+
+       <div class="empty-state hidden" id="emptyState">
+         <div class="empty-icon">
+          <span class="material-symbols-outlined">description</span>
+         </div>
+         <h2>No question files found</h2>
+         <p>Add <code>.json</code> or <code>.txt</code> question files using <strong>Import files</strong>, or configure a question source.</p>
+       </div>
+    </section>
+
+       <section id="examView" class="view" aria-labelledby="examTitle">
+
+      <article class="question-card">
+        <div class="question-toolbar">
+          <span class="question-id-badge" id="questionIdBadge">QID-—</span>
+          <button class="qid-style-toggle tutored-toggle" id="tutoredToggle" type="button" aria-label="Toggle explanations" aria-pressed="true">Tutored</button>
+        </div>
+        <div class="question-text" id="questionText"></div>
+        <ol class="options-list" id="optionsList"></ol>
+      </article>
+
+      <section class="question-result-strip hidden" id="questionResultStrip" aria-label="Question result summary">
+        <div class="question-result-item" id="questionMarksWrap">
+          <span class="material-symbols-outlined" aria-hidden="true">star</span>
+          <div>
+            <strong id="questionMarkStat">0/1</strong>
+            <span>Scored</span>
+          </div>
+        </div>
+        <div class="question-result-item" id="questionTimeWrap">
+          <span class="material-symbols-outlined" aria-hidden="true">timer</span>
+          <div>
+            <strong id="questionTimeStat">00:00</strong>
+            <span>Time</span>
+          </div>
+        </div>
+        <div class="question-result-item" id="questionStateWrap">
+          <span class="material-symbols-outlined" aria-hidden="true">rule</span>
+          <div>
+            <strong id="questionResultStat">Pending</strong>
+            <span>Answer</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="feedback-card hidden" id="feedbackCard">
+        <div class="feedback-heading" id="feedbackHeading"></div>
+        <div class="feedback-body" id="feedbackBody"></div>
+      </aside>
+    </section>
+
+    <section id="resultView" class="view" aria-labelledby="resultTitle">
+      <div class="result-card result-card-premium">
+        <div class="result-heading-row">
+          <p class="eyebrow"><span class="material-symbols-outlined" aria-hidden="true">verified</span>Result Saved</p>
+          <span class="result-status-pill"><span class="material-symbols-outlined" aria-hidden="true">cloud_done</span> Saved</span>
+        </div>
+        <h1 id="resultTitle">Test completed</h1>
+        <div class="result-score-panel">
+          <div class="result-score" id="resultScore">0%</div>
+          <div>
+            <strong>Final Score</strong>
+            <span>Based on answered questions</span>
+          </div>
+        </div>
+        <div class="result-stats-grid" id="resultStatsGrid" aria-label="Saved result statistics"></div>
+        <p class="result-details" id="resultDetails"></p>
+        <div class="result-actions">
+          <button class="primary-button result-action-button" id="resultBackBtn" type="button" aria-label="Back to test list">
+            <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+            <span>Dashboard</span>
+          </button>
+          <button class="secondary-button result-action-button" id="resultReviewBtn" type="button" aria-label="Review answers">
+            <span class="material-symbols-outlined" aria-hidden="true">rate_review</span>
+            <span>Review</span>
+          </button>
+          <button class="danger-button result-action-button" id="resultRetakeBtn" type="button" aria-label="Retake test">
+            <span class="material-symbols-outlined" aria-hidden="true">restart_alt</span>
+            <span>Retake</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <nav class="bottom-bar hidden" id="bottomBar" aria-label="Question navigation">
+    <button class="secondary-button" id="prevBtn" type="button">Previous</button>
+    <button class="primary-button" id="checkBtn" type="button" disabled>Check</button>
+    <button class="primary-button" id="nextBtn" type="button">Next</button>
+    </nav>
+
+  <audio id="gurbaniAudio" preload="none" playsinline>
+    <source src="https://live.sgpc.net:8442/;20nocache=889869" type="audio/mpeg" />
+  </audio>
+
+  <div class="loading-overlay hidden" id="loadingOverlay" role="status" aria-live="polite">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <p id="loadingText">Loading…</p>
+    </div>
+  </div>
+
+  <script src="repo-config.js"></script>
+  <script src="assets/app.js?v=43"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
+
